@@ -55,7 +55,9 @@ def compute_overdue_rolling_3m(payments_df: DataFrame) -> DataFrame:
     rolling_window = rolling_last_n_months(ROLLING_MONTHS)
 
     total_due_amount = F.sum(amount_col).alias(TOTAL_DUE_AMOUNT)
-    total_past_due_amount = F.sum(F.when(is_past_due_payment, amount_col)).alias(TOTAL_PAST_DUE_AMOUNT)
+    total_past_due_amount = F.sum(F.when(is_past_due_payment, amount_col).otherwise(to_decimal_zero())).alias(
+        TOTAL_PAST_DUE_AMOUNT
+    )
 
     return (
         payments_df.withColumn(MONTH_COL, F.trunc(DUE_DATE_COL, "month"))
