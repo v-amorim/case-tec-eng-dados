@@ -7,7 +7,7 @@ from pyspark.sql import functions as F
 
 from src.utils import to_decimal_zero, validate_payments_schema
 
-PAST_DUE_STATUSES = ("overdue", "late")
+PAST_DUE_STATUSES = ("late", "open")
 ROLLING_MONTHS = 3
 
 SCHOOL_ID_COL = "school_id"
