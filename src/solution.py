@@ -28,8 +28,13 @@ def safe_ratio(numerator: F.Column, denominator: F.Column) -> F.Column:
     return F.when(denominator > 0, ratio).otherwise(to_decimal_zero())
 
 
+def monthly_index_expr() -> F.Column:
+    """Cria um índice mensal para ordenação, considerando o ano e o mês"""
+    return F.year(MONTH_COL) * 12 + F.month(MONTH_COL)
+
+
 def rolling_last_n_months(n: int) -> Window:
-    return Window.partitionBy(SCHOOL_ID_COL).orderBy(MONTH_COL).rowsBetween(-(n - 1), 0)
+    return Window.partitionBy(SCHOOL_ID_COL).orderBy(monthly_index_expr()).rangeBetween(-(n - 1), 0)
 
 
 def compute_overdue_rolling_3m(payments_df: DataFrame) -> DataFrame:
